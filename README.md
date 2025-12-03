@@ -1,6 +1,7 @@
 # LLM KV Cache Paging Simulator
 LLM Inference Simulator that proves that paging and prefix-sharing reduces the memory waste for concurrent decode operations.
 
+```
 > make clean
 rm -f llm_sim src/main.o src/sim.o src/mono_kv.o src/page_kv.o src/page_alloc.o src/workload.o
 > make llm_sim
@@ -21,3 +22,4 @@ Paged+Prefix:
   logical_bytes  = 621674496
   physical_bytes = 629800960
   waste_bytes    = 8126464 (1.29%)
+```
