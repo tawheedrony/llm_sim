@@ -2,6 +2,7 @@
 #define KV_BACKEND_H
 
 #include <stddef.h>
+#include <stdlib.h>
 #include "sim_config.h"
 #include "workload.h"
 
@@ -25,7 +26,7 @@ typedef struct KVBackendVTable {
 
 typedef struct KVBackend {
     const KVBackendVTable* vtable;
-    void* impl; // backend-specific state
+    void* impl;
 } KVBackend;
 
 // Helper inline wrappers
@@ -42,7 +43,9 @@ static inline KVStats kv_stats(KVBackend* b) {
     return b->vtable->stats(b);
 }
 static inline void kv_destroy(KVBackend* b) {
+    if (!b) return;
     b->vtable->destroy(b);
+    free(b);
 }
 
 #endif

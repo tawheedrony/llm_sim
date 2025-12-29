@@ -82,7 +82,6 @@ Page* page_alloc(PageAllocator* pa) {
 
 void page_inc_ref(PageAllocator* pa, Page* p) {
     (void) pa;
-    // for a simulator, we can just increment without atomic
     p->ref++;
 }
 

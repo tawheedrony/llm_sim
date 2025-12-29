@@ -139,6 +139,10 @@ static void paged_append_token(KVBackend* backend, SeqId id) {
     PagedKVImpl* impl = (PagedKVImpl*) backend->impl;
     PagedSeqState* s = &impl->seqs[id];
 
+    if (s->cur_tokens >= impl->cfg.max_context_tokens) {
+        return;
+    }
+
     size_t idx = s->cur_tokens;
     size_t tokens_per_page = impl->cfg.tokens_per_page;
     size_t page_idx = idx / tokens_per_page;

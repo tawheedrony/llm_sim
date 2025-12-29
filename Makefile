@@ -1,10 +1,10 @@
 CFLAGS = -O2 -Wall -std=c11 -pthread -Iinclude
 LDFLAGS = -pthread
 
-OBJ = src/main.o src/sim.o src/mono_kv.o src/page_kv.o src/page_alloc.o src/workload.o
+SRC = src/main.c src/sim.c src/mono_kv.c src/page_kv.c src/page_alloc.c src/workload.c
 
-llm_sim: $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LDFLAGS)
+llm_sim: $(SRC)
+	$(CC) $(CFLAGS) -o $@ $(SRC) $(LDFLAGS)
 
 clean:
-	rm -f llm_sim $(OBJ)
+	rm -f llm_sim

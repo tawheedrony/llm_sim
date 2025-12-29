@@ -8,6 +8,9 @@ typedef struct SimConfig {
     size_t num_layers;
     size_t num_heads;
     size_t head_dim;
+
+    size_t max_context_tokens;   // NEW: fixed max context window (e.g., 2048)
+
     size_t tokens_per_page;
     size_t arena_bytes;
 

@@ -20,6 +20,7 @@ typedef struct MonoKVImpl {
 } MonoKVImpl;
 
 static SeqId mono_init_sequence(KVBackend* backend, const SequenceWork* work) {
+    (void)work;
     MonoKVImpl* impl = (MonoKVImpl*) backend->impl;
     pthread_mutex_lock(&impl->mutex);
 
@@ -37,11 +38,10 @@ static SeqId mono_init_sequence(KVBackend* backend, const SequenceWork* work) {
     SeqId id = impl->num_seqs++;
     MonoSeqState* s = &impl->seqs[id];
     s->bytes_per_token = bytes_per_token(&impl->cfg);
-    
-    // FIX: Allocate a fixed "Context Window" size to simulate real-world monolithic waste.
-    // Real systems must pre-allocate max_context_length because they can't realloc easily.
-    s->max_tokens = 2048; 
-    
+
+    // Realistic fixed allocation: pre-allocate max context window
+    s->max_tokens = impl->cfg.max_context_tokens;
+
     s->cur_tokens = 0;
     s->kv_buffer = (unsigned char*) malloc(s->max_tokens * s->bytes_per_token);
     if (!s->kv_buffer) {
@@ -107,16 +107,12 @@ KVBackend* create_monolithic_backend(const SimConfig* cfg) {
     MonoKVImpl* impl = (MonoKVImpl*) calloc(1, sizeof(MonoKVImpl));
     impl->cfg = *cfg;
     pthread_mutex_init(&impl->mutex, NULL);
-    
-    // Pre-allocate capacity
+
     impl->capacity = cfg->num_sequences;
     impl->seqs = (MonoSeqState*) calloc(impl->capacity, sizeof(MonoSeqState));
-    
+
     KVBackend* b = (KVBackend*) calloc(1, sizeof(KVBackend));
     b->impl = impl;
-    
-    // FIX: Use the vtable instead of direct assignment
     b->vtable = &MONO_VTABLE;
-    
     return b;
 }
